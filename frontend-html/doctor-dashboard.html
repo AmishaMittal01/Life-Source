@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeSource — Doctor Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #fef5f5;
+    }
+  </style>
+</head>
+
+<body class="font-sans">
+
+  <!-- HEADER -->
+  <header class="bg-red-600 text-white py-3 shadow-md">
+    <h1 class="text-center text-lg font-semibold">
+      LifeSource — Doctor Dashboard
+    </h1>
+  </header>
+
+  <!-- TOP BAR -->
+  <nav class="bg-white shadow px-8 py-4 flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-red-600">LifeSource</h2>
+
+    <button onclick="doctorLogout()"
+      class="bg-red-600 text-white px-6 py-2 rounded-full shadow hover:bg-red-700">
+      Logout
+    </button>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="max-w-7xl mx-auto mt-10 px-6">
+    <h2 id="doctorWelcome" class="text-3xl font-bold text-slate-800 mb-8">
+      Welcome, Doctor 👋
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- My Camps -->
+      <div class="bg-white p-6 rounded-xl shadow-lg col-span-1 md:col-span-2">
+        <h3 class="text-xl font-bold text-red-600 mb-3">My Assigned Camps</h3>
+        <p class="text-slate-600 mb-4">View and manage camps where you are the screening doctor.</p>
+
+        <div id="doctorCamps" class="space-y-4">
+          <!-- JS will insert cards -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/doctor.js"></script>
+</body>
+
+</html>
+

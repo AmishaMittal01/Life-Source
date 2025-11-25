@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeSource — Smart Blood Donation System</title>
+
+  <!-- TAILWIND CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background-color: #fef5f5; /* soft red background */
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <!-- HEADER -->
+  <header class="bg-red-600 text-white py-3 shadow-md">
+    <h1 class="text-center text-lg font-semibold">
+      LifeSource — A Smart Blood Donation & Camp Management System
+    </h1>
+  </header>
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow px-8 py-4 flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-red-600">LifeSource</h2>
+  </nav>
+  <!-- HERO SECTION -->
+  <section class="max-w-7xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-center px-6">
+
+    <!-- LEFT TEXT -->
+    <div>
+      <h1 class="text-5xl font-bold text-slate-800 leading-tight">
+        Donate Blood, <br />
+        Save Lives
+      </h1>
+
+      <h1 class="text-5xl font-extrabold text-red-600 mt-2">
+        Join LifeSource Today
+      </h1>
+
+      <p class="text-slate-600 mt-4 text-lg leading-relaxed pr-6">
+        A smart and secure platform for donors, organizers, and doctors to streamline 
+        blood donation camps and improve healthcare impact.
+      </p>
+
+      <!-- ROLE BUTTONS -->
+      <div class="mt-6 flex gap-4">
+        <button onclick="location.href='donor-login.html'"
+          class="bg-red-600 text-white px-6 py-3 rounded-full font-medium shadow hover:bg-red-700">
+          Donor
+        </button>
+
+        <button onclick="location.href='doctor-login.html'"
+          class="border border-red-600 text-red-600 px-6 py-3 rounded-full font-medium shadow hover:bg-red-50">
+          Doctor
+        </button>
+
+        <button onclick="location.href='organizer-login.html'"
+          class="border border-red-600 text-red-600 px-6 py-3 rounded-full font-medium shadow hover:bg-red-50">
+          Organizer
+        </button>
+      </div>
+    </div>
+   <!-- RIGHT IMAGE -->
+<div class="flex justify-center">
+  <img 
+    class="rounded-3xl shadow-xl w-96"
+    src="assets/hero-illustration.jpg"
+    alt="blood donation illustration" />
+</div>
+
+  </section>
+
+</body>
+</html>

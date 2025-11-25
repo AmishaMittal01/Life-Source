@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeSource — Camp Registrations</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #fef5f5;
+    }
+  </style>
+</head>
+
+<body class="font-sans">
+
+  <!-- HEADER -->
+  <header class="bg-red-600 text-white py-3 shadow-md">
+    <h1 class="text-center text-lg font-semibold">
+      LifeSource — Camp Registrations
+    </h1>
+  </header>
+
+  <!-- BACK -->
+  <div class="p-4">
+    <button onclick="history.back()" class="text-red-600 font-semibold hover:underline">&larr; Back</button>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-xl p-8">
+
+    <h2 id="campTitle" class="text-2xl font-bold text-red-600 mb-2"></h2>
+    <p id="campDetails" class="text-slate-600 mb-6"></p>
+
+    <h3 class="text-xl font-semibold text-slate-800 mb-3">Registered Donors</h3>
+
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2">Donor Name</th>
+          <th class="py-2">Blood Group</th>
+          <th class="py-2">Status</th>
+          <th class="py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="registrationsBody">
+        <!-- JS will populate -->
+      </tbody>
+    </table>
+
+  </div>
+
+  <script src="js/doctor.js"></script>
+</body>
+
+</html>

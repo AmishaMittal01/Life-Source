@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeSource — Camp Calendar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <style>
+    body {
+      background-color: #fef5f5;
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <!-- HEADER -->
+  <header class="bg-red-600 text-white py-3 shadow-md">
+    <h1 class="text-center text-lg font-semibold">LifeSource — Camp Calendar</h1>
+  </header>
+  <!-- BACK BUTTON -->
+  <div class="p-4">
+    <button onclick="history.back()"
+      class="text-red-600 font-semibold hover:underline">&larr; Back</button>
+  </div>
+  <!-- CALENDAR CARD -->
+  <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-xl p-8">
+    <h2 class="text-3xl font-bold text-red-600 mb-6 text-center">
+      Upcoming Blood Donation Camps
+    </h2>
+    <div id="calendar"></div>
+  </div>
+  <script src="js/calendar.js"></script>
+</body>
+</html>

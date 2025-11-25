@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeSource — Donor Dashboard</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #fef5f5;
+    }
+  </style>
+</head>
+
+<body class="font-sans">
+
+  <!-- HEADER -->
+  <header class="bg-red-600 text-white py-3 shadow-md">
+    <h1 class="text-center text-lg font-semibold">
+      LifeSource — Donor Dashboard
+    </h1>
+  </header>
+
+  <!-- TOP BAR -->
+  <nav class="bg-white shadow px-8 py-4 flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-red-600">LifeSource</h2>
+
+    <button onclick="logout()"
+      class="bg-red-600 text-white px-6 py-2 rounded-full shadow hover:bg-red-700">
+      Logout
+    </button>
+  </nav>
+
+  <!-- MAIN DASHBOARD -->
+  <div class="max-w-7xl mx-auto mt-10 px-6">
+
+    <h2 id="welcomeText" class="text-3xl font-bold text-slate-800 mb-8">
+      Welcome, Donor 👋
+    </h2>
+
+  <!-- GRID LAYOUT -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+  <!-- UPCOMING CAMPS -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <h3 class="text-xl font-bold text-red-600 mb-3">Upcoming Camps</h3>
+    <p class="text-slate-600 mb-4">Stay updated with upcoming donation drives.</p>
+
+    <div id="upcomingCamps" class="space-y-3"></div>
+
+    <button onclick="location.href='donor-camps.html'"
+      class="mt-4 text-red-600 font-semibold hover:underline">View All →</button>
+  </div>
+
+  <!-- REGISTER FOR CAMP -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <h3 class="text-xl font-bold text-red-600 mb-3">Register for a Camp</h3>
+    <p class="text-slate-600 mb-4">Select a camp and book your slot.</p>
+
+    <button onclick="location.href='donor-calendar.html'"
+      class="bg-red-600 text-white w-full py-3 rounded-full shadow hover:bg-red-700">
+      Open Calendar
+    </button>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <h3 class="text-xl font-bold text-red-600 mb-3">Your Profile</h3>
+    <p class="text-slate-600 mb-4">View and update your personal information.</p>
+
+    <button onclick="location.href='donor-profile.html'"
+      class="bg-red-600 text-white w-full py-3 rounded-full shadow hover:bg-red-700">
+      Manage Profile
+    </button>
+  </div>
+
+  <!-- DONATION HISTORY -->
+  <div class="bg-white p-6 rounded-xl shadow-lg col-span-1 md:col-span-2 lg:col-span-1">
+    <h3 class="text-xl font-bold text-red-600 mb-3">Donation History</h3>
+    <p class="text-slate-600 mb-4">Track your previous donations.</p>
+
+    <table class="w-full text-left text-slate-700">
+      <thead>
+        <tr>
+          <th class="pb-2">Date</th>
+          <th class="pb-2">Camp</th>
+          <th class="pb-2">Status</th>
+        </tr>
+      </thead>
+      <tbody id="donationHistory"></tbody>
+    </table>
+
+    <button onclick="location.href='donor-history.html'"
+      class="mt-4 text-red-600 font-semibold hover:underline">View Full History →</button>
+  </div>
+
+  <div class="bg-white p-6 rounded-xl shadow-lg col-span-1 md:col-span-2 lg:col-span-3">
+    <h3 class="text-xl font-bold text-red-600 mb-3">Your Camp Registrations</h3>
+    <p class="text-slate-600 mb-4">Here are the camps you have registered for.</p>
+
+    <table class="w-full text-left text-slate-700">
+      
+      <tbody id="myRegistrations"></tbody>
+    </table>
+  </div>
+</div>
+  <!-- JS -->
+  <script src="js/donor.js"></script>
+</body>
+</html>

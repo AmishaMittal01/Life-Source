@@ -1,0 +1,328 @@
+-- DATABASE CREATION
+
+DROP DATABASE IF EXISTS blood_donation;
+CREATE DATABASE blood_donation;
+USE blood_donation;
+
+
+-- TABLE: doctors
+
+CREATE TABLE doctors (
+  doctor_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  specialization VARCHAR(100),
+  contact VARCHAR(15),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE: organizers
+
+CREATE TABLE organizers (
+  organizer_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  contact VARCHAR(15),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- TABLE: donors
+
+CREATE TABLE donors (
+  donor_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  blood_group VARCHAR(5),
+  contact VARCHAR(15),
+  date_of_birth DATE,
+  last_donation_date DATE,
+  gender VARCHAR(10),
+  address VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- TABLE: camps
+
+CREATE TABLE camps (
+  camp_id INT AUTO_INCREMENT PRIMARY KEY,
+  organizer_id INT,
+  doctor_id INT,
+  camp_name VARCHAR(100),
+  location VARCHAR(255),
+  date DATE,
+  start_time TIME,
+  end_time TIME,
+  capacity INT,
+  FOREIGN KEY (organizer_id) REFERENCES organizers(organizer_id),
+  FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id)
+);
+
+
+-- TABLE: camp_registrations
+
+CREATE TABLE camp_registrations (
+  registration_id INT AUTO_INCREMENT PRIMARY KEY,
+  camp_id INT,
+  donor_id INT,
+  registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('Registered','Screened','Donated','Deferred') DEFAULT 'Registered',
+  FOREIGN KEY (camp_id) REFERENCES camps(camp_id),
+  FOREIGN KEY (donor_id) REFERENCES donors(donor_id)
+);
+
+
+-- TABLE: pre_donation_checks
+
+CREATE TABLE pre_donation_checks (
+  check_id INT AUTO_INCREMENT PRIMARY KEY,
+  registration_id INT,
+  weight DECIMAL(5,2),
+  hemoglobin DECIMAL(4,1),
+  blood_pressure VARCHAR(20),
+  pulse INT,
+  temperature DECIMAL(4,1),
+  eligibility ENUM('Eligible','Deferred'),
+  remarks TEXT,
+  checked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (registration_id) REFERENCES camp_registrations(registration_id)
+);
+
+-- TABLE: donations
+
+CREATE TABLE donations (
+  donation_id INT AUTO_INCREMENT PRIMARY KEY,
+  donor_id INT NOT NULL,
+  camp_id INT NOT NULL,
+  donation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  units_collected INT DEFAULT 1,
+  blood_group VARCHAR(5),
+  status ENUM('Successful','Rejected','Pending') DEFAULT 'Pending',
+  FOREIGN KEY (donor_id) REFERENCES donors(donor_id),
+  FOREIGN KEY (camp_id) REFERENCES camps(camp_id)
+);
+
+-- TRIGGERS
+
+DELIMITER $$
+-- BEFORE INSERT: Check 90 day rule
+CREATE TRIGGER before_donation_insert
+BEFORE INSERT ON donations
+FOR EACH ROW
+BEGIN
+  DECLARE last_date DATE;
+  SELECT last_donation_date INTO last_date FROM donors WHERE donor_id = NEW.donor_id;
+  IF last_date IS NOT NULL AND DATEDIFF(NEW.donation_date, last_date) < 90 THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Donor not eligible: last donation less than 90 days ago';
+  END IF;
+END$$
+
+  -- Update donor last donation date
+  UPDATE donors
+  SET last_donation_date = NEW.donation_date
+  WHERE donor_id = NEW.donor_id;
+END$$
+
+DELIMITER ;
+
+
+-- STORED PROCEDURES
+
+DELIMITER $$
+
+-- Register Organizer
+CREATE PROCEDURE sp_register_organizer (
+    IN p_name VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_password VARCHAR(255),
+    IN p_contact VARCHAR(20)
+)
+BEGIN
+    IF EXISTS (SELECT 1 FROM organizers WHERE email = p_email) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Organizer email already exists';
+    END IF;
+
+    INSERT INTO organizers (name, email, password, contact)
+    VALUES (p_name, p_email, p_password, p_contact);
+END$$
+
+-- Get Organizer by Email
+CREATE PROCEDURE sp_get_organizer_by_email (
+    IN p_email VARCHAR(100)
+)
+BEGIN
+    SELECT * FROM organizers WHERE email = p_email;
+END$$
+
+-- Register Donor
+CREATE PROCEDURE sp_register_donor (
+    IN p_name VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_password VARCHAR(255),
+    IN p_gender VARCHAR(10),
+    IN p_date_of_birth DATE,
+    IN p_blood_group VARCHAR(5),
+    IN p_contact VARCHAR(20),
+    IN p_address VARCHAR(255)
+)
+BEGIN
+    IF EXISTS (SELECT 1 FROM donors WHERE email = p_email) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Email already exists';
+    END IF;
+
+    IF p_blood_group NOT IN ('A+','A-','B+','B-','O+','O-','AB+','AB-') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid blood group';
+    END IF;
+
+    IF p_gender NOT IN ('Male', 'Female', 'Other') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid gender';
+    END IF;
+
+    INSERT INTO donors
+    (name, email, password, gender, date_of_birth, blood_group, contact, address)
+    VALUES
+    (p_name, p_email, p_password, p_gender, p_date_of_birth, p_blood_group, p_contact, p_address);
+END$$
+
+-- Get Donor by Email
+CREATE PROCEDURE sp_get_donor_by_email (
+    IN p_email VARCHAR(100)
+)
+BEGIN
+    SELECT * FROM donors WHERE email = p_email;
+END$$
+
+-- Register Doctor
+CREATE PROCEDURE sp_register_doctor (
+    IN p_name VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_password VARCHAR(255),
+    IN p_specialization VARCHAR(50),
+    IN p_contact VARCHAR(20)
+)
+BEGIN
+    IF EXISTS (SELECT 1 FROM doctors WHERE email = p_email) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor email already exists';
+    END IF;
+
+    IF p_specialization NOT IN ('General', 'Pathology', 'Hematology', 'Physician') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid specialization';
+    END IF;
+
+    INSERT INTO doctors (name, email, password, specialization, contact)
+    VALUES (p_name, p_email, p_password, p_specialization, p_contact);
+END$$
+
+-- Get Doctor by Email
+CREATE PROCEDURE sp_get_doctor_by_email (
+    IN p_email VARCHAR(100)
+)
+BEGIN
+    SELECT * FROM doctors WHERE email = p_email;
+END$$
+
+-- Create Camp
+CREATE PROCEDURE sp_create_camp (
+    IN p_organizer_id INT,
+    IN p_doctor_id INT,
+    IN p_camp_name VARCHAR(100),
+    IN p_location VARCHAR(255),
+    IN p_date DATE,
+    IN p_start_time TIME,
+    IN p_end_time TIME,
+    IN p_capacity INT
+)
+BEGIN
+    IF p_capacity <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Capacity must be greater than 0';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM doctors WHERE doctor_id = p_doctor_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Doctor does not exist';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM organizers WHERE organizer_id = p_organizer_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Organizer does not exist';
+    END IF;
+
+    INSERT INTO camps (organizer_id, doctor_id, camp_name, location, date, start_time, end_time, capacity)
+    VALUES (p_organizer_id, p_doctor_id, p_camp_name, p_location, p_date, p_start_time, p_end_time, p_capacity);
+END$$
+
+-- Register Donor to Camp
+CREATE PROCEDURE sp_register_donor_to_camp (
+    IN p_donor_id INT,
+    IN p_camp_id INT
+)
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM donors WHERE donor_id = p_donor_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Donor does not exist';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM camps WHERE camp_id = p_camp_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Camp does not exist';
+    END IF;
+
+    INSERT INTO camp_registrations (donor_id, camp_id)
+    VALUES (p_donor_id, p_camp_id);
+END$$
+
+-- Record Donation
+CREATE PROCEDURE sp_record_donation (
+    IN p_donor INT,
+    IN p_camp INT,
+    IN p_bgroup VARCHAR(5),
+    IN p_donation_date DATE
+)
+BEGIN
+    INSERT INTO donations (donor_id, camp_id, blood_group, donation_date)
+    VALUES (p_donor, p_camp, p_bgroup, p_donation_date);
+
+    SELECT LAST_INSERT_ID() AS donation_id;
+END$$
+
+
+
+-- Submit Screening
+CREATE PROCEDURE sp_submit_screening (
+    IN p_registration_id INT,
+    IN p_weight INT,
+    IN p_hemoglobin DECIMAL(4,1),
+    IN p_blood_pressure VARCHAR(20),
+    IN p_pulse INT,
+    IN p_temperature DECIMAL(4,1),
+    IN p_remarks VARCHAR(255)
+)
+BEGIN
+    DECLARE auto_eligibility VARCHAR(20);
+
+    IF p_weight < 50 THEN
+        SET auto_eligibility = 'Not Eligible';
+    ELSEIF p_hemoglobin < 12.5 THEN
+        SET auto_eligibility = 'Not Eligible';
+    ELSE
+        SET auto_eligibility = 'Eligible';
+    END IF;
+
+    INSERT INTO pre_donation_checks
+    (registration_id, weight, hemoglobin, blood_pressure, pulse, temperature, eligibility, remarks)
+    VALUES (p_registration_id, p_weight, p_hemoglobin, p_blood_pressure, p_pulse, p_temperature, auto_eligibility, p_remarks);
+END$$
+
+DELIMITER ;
