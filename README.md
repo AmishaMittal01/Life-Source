@@ -1,70 +1,188 @@
-# Getting Started with Create React App
+# 📌 **LifeSource — Blood Donation Camp Management System**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+LifeSource is a **complete smart blood donation ecosystem** designed for colleges and communities.
+It streamlines **donor registrations**, **doctor screenings**, **camp scheduling**, and **blood bank inventory management** — all using a modern, secure workflow.
 
-## Available Scripts
+This project uses:
 
-In the project directory, you can run:
+* **Frontend:** HTML + TailwindCSS + JavaScript
+* **Backend:** Node.js + Express
+* **Database:** MySQL (with triggers, procedures & relationships)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 **Features**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🧑‍🤝‍🧑 Donor Portal
 
-### `npm test`
+* Donor registration & login
+* View upcoming camps on a **calendar**
+* Register for a donation camp
+* Fill medical questionnaire
+* View donation history
+* See eligibility status
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+### 👨‍⚕️ Doctor Portal
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Doctor login & dashboard
+* View assigned camps
+* See all **donor screenings**
+* View donor questionnaire answers (read-only)
+* Perform health screening:
+  * Weight
+  * Hemoglobin
+  * Blood pressure
+  * Pulse
+  * Temperature
+  * Remarks
+* Approve / Defer donor
+* Screening saved to MySQL (using triggers & linked tables)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🎪 Organizer Portal
 
-### `npm run eject`
+* Organizer registration & login
+* Create blood donation camps
+* Assign doctors
+  
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🏗 **System Architecture**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### **Backend (Node.js + Express)**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+* REST API
+* Route modules:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  ```
+  /api/donors
+  /api/doctors
+  /api/organizers
+  /api/camps
+  /api/registrations
+  /api/screening
+  ```
+* MySQL connection
+* Stored procedures + triggers (eligibility, inventory update)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### **Frontend (HTML + Tailwind + JS)**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+No frameworks → fast, lightweight.
+Includes:
 
-### Code Splitting
+* donor-dashboard.html
+* donor-calendar.html
+* doctor-dashboard.html
+* doctor-screening.html
+* organizer-dashboard.html
+* and all linked JS modules
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+### **Database (MySQL)**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### Core Tables:
 
-### Making a Progressive Web App
+* donors
+* doctors
+* organizers
+* camps
+* camp_registrations
+* pre_donation_checks
+* donations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Automation Using:
 
-### Advanced Configuration
+* **Triggers**
+* **Stored Procedures**
+* **Foreign keys**
+* **Validation constraints**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 📅 **Workflow**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### **1. Donor registers for a camp**
 
-### `npm run build` fails to minify
+Stored in `camp_registrations`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### **2. Doctor sees pending donors**
+
+Filtered by assigned camp + ‘Registered’ status.
+
+### **3. Doctor screens donor**
+
+Saved in `pre_donation_checks`.
+`status` changes → `Screened`.
+
+### **4. Donation occurs**
+
+Trigger updates `inventory` automatically.
+
+---
+
+## 🛠 **Installation & Setup**
+
+### 1️⃣ Clone the repository
+
+```
+git clone https://github.com/YOUR-USERNAME/blood-donation-system.git
+cd blood-donation-system
+```
+
+### 2️⃣ Install backend dependencies
+
+```
+cd backend
+npm install
+```
+
+### 3️⃣ Create `.env`
+
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=yourpassword
+DB_NAME=blood_donation
+```
+
+### 4️⃣ Run backend
+
+```
+node server.js
+```
+
+Server runs on **[http://127.0.0.1:5001](http://127.0.0.1:5001)**
+
+### 5️⃣ Run frontend
+
+Simply open:
+
+```
+frontend-html/index.html
+```
+
+in your browser.
+
+---
+
+## 🎯 **Project Motivation**
+
+This project solves real waste of time and inefficiency in college blood campaigns.
+It makes donation transparent, safe, and well-organized.
+
+---
+
+## ❤️ **Contributors**
+
+* Amisha Mittal
+* Harshita Saxena
+* Sheen Sharma
+
+---
+
