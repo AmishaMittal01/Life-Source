@@ -178,6 +178,14 @@ It makes donation transparent, safe, and well-organized.
 
 ---
 
+## UI Screens
+![Page 1](outputs/page1.png)
+![Page 3](outputs/page3.png)
+![Page 2](outputs/page2.png)
+![Page 5](outputs/page5.png)
+![Page 4](outputs/page4.png)
+![Page 6](outputs/page6.png)
+
 ## ❤️ **Contributors**
 
 * Amisha Mittal
